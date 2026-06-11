@@ -1,5 +1,7 @@
 # Software Testing Portfolio
 
+This repository is continuously updated as part of my journey to become a better Quality Assurance Engineer through hands-on practice with real-world testing scenarios.
+
 A professional Software Quality Assurance portfolio created to demonstrate my practical QA skills through real testing scenarios.
 
 This repository contains projects involving:
