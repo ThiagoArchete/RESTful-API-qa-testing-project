@@ -20,3 +20,5 @@ This repository contains projects involving:
 - Test Evidence
 
 The goal of this repository is to simulate the daily activities of a QA Analyst in real software projects while continuously improving testing skills and documentation practices.
+
+Feel free to check out my GitHub Profile, there you'll find all my contact informations.
