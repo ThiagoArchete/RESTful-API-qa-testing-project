@@ -17,7 +17,11 @@ Neste plano, todos os 6 endpoints disponibilizados na URL https://api.restful-ap
 
 ## 3. Estratégia de teste
 
-Os testes foram realizados após um levantamento dos casos de teste baseados nos resultados de cada endpoint e nas possíveis variações do request body, response body e HTTP status code.
+Os casos de teste foram levantados a partir da documentação oficial de cada endpoint, cobrindo as principais variações esperadas de request body, response body e HTTP status code.
+
+Para validar os casos de teste e critérios de aceite, criei scripts automatizados no Postman para cada endpoint, testando-os individualmente antes de prosseguir. Alguns scripts apresentaram falhas na primeira execução, causadas por erros de sintaxe ou lógica de validação — identifiquei a causa e corrigi cada um até refletirem corretamente os critérios de aceite definidos.
+
+Ao longo do processo, alguns casos de teste foram ajustados a partir de testes exploratórios. Um exemplo ocorreu no endpoint `GET /objects/{id}`: o caso de teste original previa um único cenário para IDs em formato inesperado (letras, símbolos, ou combinações). Ao testar exploratoriamente diferentes variações, percebi que a API retornava respostas distintas (status code e corpo de resposta) dependendo da composição do ID informado — o que indicou uma possível inconsistência na validação de entrada. Fragmentei o caso original em três casos de teste separados para cobrir cada variação com precisão, e documentei a inconsistência encontrada como um bug report (`BUG-00X`).
 
 ## 4. Ambiente e ferramentas
 
