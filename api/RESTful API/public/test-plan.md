@@ -21,7 +21,7 @@ Os casos de teste foram levantados a partir da documentação oficial de cada en
 
 Para validar os casos de teste e critérios de aceite, criei scripts automatizados no Postman para cada endpoint, testando-os individualmente antes de prosseguir. Alguns scripts apresentaram falhas na primeira execução, causadas por erros de sintaxe ou lógica de validação — identifiquei a causa e corrigi cada um até refletirem corretamente os critérios de aceite definidos.
 
-Ao longo do processo, alguns casos de teste foram ajustados a partir de testes exploratórios. Um exemplo ocorreu no endpoint `GET /objects/{id}`: o caso de teste original previa um único cenário para IDs em formato inesperado (letras, símbolos, ou combinações). Ao testar exploratoriamente diferentes variações, percebi que a API retornava respostas distintas (status code e corpo de resposta) dependendo da composição do ID informado — o que indicou uma possível inconsistência na validação de entrada. Fragmentei o caso original em três casos de teste separados para cobrir cada variação com precisão, e documentei a inconsistência encontrada como um bug report (`BUG-00X`).
+Todas as requisições da coleção são validadas quanto a tempo de resposta < 1000ms via script de nível de coleção.
 
 ## 4. Ambiente e ferramentas
 
@@ -39,3 +39,4 @@ Critérios de saída: o teste é considerado concluído quando todos os cenário
 - A API pública pode ficar instável durante os testes, por ser um ambiente de prática e uso compartilhado.
 - As premissas foram definidas com base nas regras esperadas da API e nos comportamentos observados durante a execução dos testes.
 - Quando alguma regra não estava totalmente clara, foi adotada uma premissa para fins de documentação e execução dos testes.
+- Limiar de 1000ms para todos os endpoints é uma referência de SLA aproximada; variações podem ocorrer por fatores de rede alheios à aplicação.
