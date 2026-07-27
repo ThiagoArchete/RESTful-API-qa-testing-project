@@ -53,13 +53,11 @@ Cada subpasta (`/sistema1`, `/sistema2`, etc.) segue o mesmo padrão interno, pa
  
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)
-![Jira](https://img.shields.io/badge/Jira-0052CC?style=flat&logo=jira&logoColor=white)
-![Qase](https://img.shields.io/badge/Qase-6C4EE3?style=flat)
 ![SQL](https://img.shields.io/badge/SQL-4479A1?style=flat&logo=postgresql&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
 ![Gherkin](https://img.shields.io/badge/BDD%2FGherkin-23A18C?style=flat)
  
-**Testes manuais e exploratórios** · **Testes de API** (validação de contrato, status codes, payloads) · **Gestão de casos de teste** (Qase) · **Rastreamento de bugs** (Jira) · **Consultas SQL** para validação de dados.
+**Testes manuais e exploratórios** · **Testes de API** (validação de contrato, status codes, payloads) · **Gestão de casos de teste e Rastreamento de bbugs** (Markdown) · **Consultas SQL** para validação de dados.
  
 ---
  
