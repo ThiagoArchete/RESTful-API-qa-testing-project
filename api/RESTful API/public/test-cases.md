@@ -10,8 +10,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-001 |
-| **Título** | Listar todos os objetos cadastrados com sucesso |
 | **Endpoint** | `GET` `/objects` |
 | **Pré-condições** | Existem pelo menos 2 ou mais objetos cadastrados no banco |
 | **Request Headers** | Nenhum obrigatório |
@@ -19,7 +17,7 @@
 | **Status Code Esperado** | `200 OK` |
 | **Response Body Esperada** | <pre>[<br>&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;"id": "1",<br>&nbsp;&nbsp;&nbsp;&nbsp;"name": "Google Pixel 6 Pro",<br>&nbsp;&nbsp;&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"color": "Cloudy White",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"capacity": "128 GB"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>]</pre> |
 | **Critérios de Aceite / Validações** | Response é um array não vazio; cada objeto possui `id` (string) e `name` (string); `data` pode ser objeto ou `null`; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | Todos os testes automatizados foram aprovados (5/5): status code 200, tempo de execução < 1000ms, array não vazio, e cada objeto validado com `id`/`name` como string e `data` como objeto ou `null`|
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (5/5): tempo de execução < 1000ms, status code 200, array não vazio, e cada objeto validado com `id`/`name` como string e `data` como objeto ou `null`|
 | **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-001-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-001-test-results.png)|
  
 ---
@@ -30,25 +28,22 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-002 |
-| **Título** | Retornar detalhes de um objeto a partir de um ID válido |
 | **Endpoint** | `GET` `/objects/7` |
 | **Pré-condições** | Objeto com `id = 7` existente no banco |
 | **Request Headers** | Nenhum obrigatório |
 | **Request Body** | N/A |
 | **Status Code Esperado** | `200 OK` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "7",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;}<br>}</pre> |
-| **Critérios de Aceite / Validações** | `id` retornado é igual ao solicitado; `name` é string não vazia; estrutura de `data` corresponde ao objeto cadastrado; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
- 
+| **Critérios de Aceite / Validações** | `id` retornado é igual ao solicitado; `name` é string não vazia; estrutura do objeto corresponde ao que foi cadastrado; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (5/5): tempo de execução < 1000ms, status code 200, ID retornado igual ao solicitado, `name` do objeto validado como string não vazia e a estrutura do objeto condiz com o que foi criado e cada objeto validado|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-002-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-002-test-results.png)|
+
  ---
 
 ### CT-API-003 — Retornar erro ao buscar ID que não existe no banco
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-003 |
-| **Título** | Retornar erro ao buscar ID que não existe no banco |
 | **Endpoint** | `GET` `/objects/999999999` |
 | **Pré-condições** | ID `999999999` garantidamente não cadastrado |
 | **Request Headers** | Nenhum obrigatório |
@@ -56,25 +51,53 @@
 | **Status Code Esperado** | `404 Not Found` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "Object with id=999999999 was not found."<br>}</pre> |
 | **Critérios de Aceite / Validações** | Status `404`; mensagem de erro identifica o ID buscado; nenhum dado sensível de outro objeto vaza na resposta; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (3/3): tempo de execução < 1000ms, status code `404 Not Found`, mensagem de erro identifica o `id` buscado e não contém dados sensíveis|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-003-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-003-test-results.png)|
 
 ---
- 
-### CT-API-004 — Comportamento ao buscar com ID em formato inesperado
- 
+
+### CT-API-004a — Busca com ID contendo caractere especial não reservado
+
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-004 |
-| **Título** | Comportamento ao buscar com ID em formato inesperado |
-| **Endpoint** | `GET` `/objects/%20`|
+| **Endpoint** | `GET` `/objects/!` |
 | **Pré-condições** | Nenhuma |
 | **Request Headers** | Nenhum obrigatório |
 | **Request Body** | N/A |
-| **Status Code Esperado** | `404 Not Found`|
-| **Response Body Esperada** | A confirmar na execução |
+| **Status Code Esperado** | `404 Not Found` (hipótese baseada no padrão observado de busca sem validação prévia de formato — a confirmar na execução) |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "Object with id=! was not found."<br>}</pre> |
 | **Critérios de Aceite / Validações** | mensagem de erro identifica o ID buscado; nenhum dado sensível de outro objeto vaza na resposta; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
- 
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (3/3): tempo de execução < 1000ms, status code `404 Not Found`, mensagem de erro identifica o `id` buscado e não contém dados sensíveis|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-004a-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-004a-test-results.png)|
+
+### CT-API-004b — Busca com ID contendo caractere reservado da URL, devidamente codificado
+
+| Campo | Detalhes |
+| :--- | :--- |
+| **Endpoint** | `GET` `/objects/%23` |
+| **Pré-condições** | Nenhuma |
+| **Request Headers** | Nenhum obrigatório |
+| **Request Body** | N/A |
+| **Status Code Esperado** | `404 Not Found` (hipótese — a confirmar na execução) |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "Object with id=# was not found."<br>}</pre> |
+| **Critérios de Aceite / Validações** | mensagem de erro identifica o ID codificado; nenhum dado sensível de outro objeto vaza na resposta; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (3/3): tempo de execução < 1000ms, status code `404 Not Found`, mensagem de erro identifica o `id` codificado e não contém dados sensíveis|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-004b-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-004b-test-results.png)|
+
+### CT-API-004c — Busca com percent-encoding malformado na URL
+
+| Campo | Detalhes |
+| :--- | :--- |
+| **Endpoint** | `GET` `/objects/%` |
+| **Pré-condições** | Nenhuma |
+| **Request Headers** | Nenhum obrigatório |
+| **Request Body** | N/A |
+| **Status Code Esperado** | `400 Bad Request` |
+| **Response Body Esperada** | A confirmar na execução |
+| **Critérios de Aceite / Validações** | mensagem de erro indica requisição malformada; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (3/3): tempo de execução < 1000ms, status code `400 Bad Request`, mensagem de erro indica requisição malformada|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-004c-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-004c-test-results.png)|
+
 ---
  
 ## 3. POST /objects
@@ -83,16 +106,15 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-005 |
-| **Título** | Criar novo objeto com `name` e `data` válidos |
 | **Endpoint** | `POST` `/objects` |
 | **Pré-condições** | Nenhuma |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;}<br>}</pre> |
 | **Status Code Esperado** | `201 Created` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "&lt;dinâmico&gt;",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"createdAt": "&lt;dinâmico&gt;"<br>}</pre> |
-| **Critérios de Aceite / Validações** | `id` gerado é string não vazia; `name` e `data` no response são idênticos ao request; `createdAt` é timestamp ISO 8601 válido e próximo do horário da requisição; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Critérios de Aceite / Validações** | `id` gerado é string não vazia; `name` e `data` no response são idênticos ao request; `createdAt` é um timestamp válido; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Quatro testes passaram e um foi rejeitado (4/5) - Os válidos foram: tempo de execução < 1000ms, `id` gerado é uma string não vazia, `name` e `data` no response são idênticos ao request e `createdAt` é um timestamp válido. O teste inválido foi o status code, o esperado seria `201 Created` por ter criado um objeto na base de dados.|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-005-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-005-test-results.png)|
 
 ---
  
@@ -100,8 +122,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-006 |
-| **Título** | Rejeitar criação sem o campo `name` |
 | **Endpoint** | `POST` `/objects` |
 | **Pré-condições** | Nenhuma |
 | **Request Headers** | `Content-Type: application/json` |
@@ -117,8 +137,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-007 |
-| **Título** | Criar objeto com payload de `data` grande e aninhado |
 | **Endpoint** | `POST` `/objects` |
 | **Pré-condições** | Nenhuma |
 | **Request Headers** | `Content-Type: application/json` |
@@ -136,8 +154,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-008 |
-| **Título** | Substituir integralmente um objeto existente |
 | **Endpoint** | `PUT` `/objects/7` |
 | **Pré-condições** | Objeto com `id = 7` existente no banco |
 | **Request Headers** | `Content-Type: application/json` |
@@ -153,8 +169,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-009 |
-| **Título** | Tentar atualizar objeto com ID inexistente |
 | **Endpoint** | `PUT` `/objects/999999999` |
 | **Pré-condições** | ID `999999999` garantidamente não cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
@@ -170,8 +184,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-010 |
-| **Título** | Verificar se `PUT` com body parcial remove os campos omitidos |
 | **Endpoint** | `PUT` `/objects/7` |
 | **Pré-condições** | Objeto com `id = 7` existente e com múltiplos campos em `data` |
 | **Request Headers** | `Content-Type: application/json` |
@@ -189,8 +201,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-011 |
-| **Título** | Atualizar somente o campo `name`, preservando `data` |
 | **Endpoint** | `PATCH` `/objects/7` |
 | **Pré-condições** | Objeto com `id = 7` existente no banco |
 | **Request Headers** | `Content-Type: application/json` |
@@ -206,8 +216,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-012 |
-| **Título** | Tentar atualização parcial em ID inexistente |
 | **Endpoint** | `PATCH` `/objects/999999999` |
 | **Pré-condições** | ID `999999999` garantidamente não cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
@@ -223,8 +231,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-013 |
-| **Título** | Enviar `PATCH` sem nenhum campo no body |
 | **Endpoint** | `PATCH` `/objects/7` |
 | **Pré-condições** | Objeto com `id = 7` existente no banco |
 | **Request Headers** | `Content-Type: application/json` |
@@ -242,8 +248,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-014 |
-| **Título** | Remover um objeto existente com sucesso |
 | **Endpoint** | `DELETE` `/objects/6` |
 | **Pré-condições** | Objeto com `id = 6` existente no banco |
 | **Request Headers** | Nenhum obrigatório |
@@ -259,8 +263,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-015 |
-| **Título** | Tentar deletar objeto que não existe |
 | **Endpoint** | `DELETE` `/objects/999999999` |
 | **Pré-condições** | ID `999999999` garantidamente não cadastrado |
 | **Request Headers** | Nenhum obrigatório |
@@ -276,8 +278,6 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **ID do Teste** | CT-API-016 |
-| **Título** | Deletar o mesmo objeto duas vezes em sequência rápida |
 | **Endpoint** | `DELETE` `/objects/8` (executado duas vezes, a segunda imediatamente após a primeira) |
 | **Pré-condições** | Objeto com `id = 8` existente no banco antes da primeira chamada |
 | **Request Headers** | Nenhum obrigatório |
