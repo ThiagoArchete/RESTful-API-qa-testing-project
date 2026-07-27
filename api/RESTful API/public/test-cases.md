@@ -13,13 +13,14 @@
 | **ID do Teste** | CT-API-001 |
 | **Título** | Listar todos os objetos cadastrados com sucesso |
 | **Endpoint** | `GET` `/objects` |
-| **Pré-condições** | Existe pelo menos 1 objeto cadastrado no banco |
+| **Pré-condições** | Existem pelo menos 2 ou mais objetos cadastrados no banco |
 | **Request Headers** | Nenhum obrigatório |
 | **Request Body** | N/A |
 | **Status Code Esperado** | `200 OK` |
 | **Response Body Esperada** | <pre>[<br>&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;"id": "1",<br>&nbsp;&nbsp;&nbsp;&nbsp;"name": "Google Pixel 6 Pro",<br>&nbsp;&nbsp;&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"color": "Cloudy White",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"capacity": "128 GB"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>]</pre> |
-| **Critérios de Aceite / Validações** | Response é um array; cada item possui `id` (string) e `name` (string); `data` pode ser objeto ou `null`; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Critérios de Aceite / Validações** | Response é um array não vazio; cada objeto possui `id` (string) e `name` (string); `data` pode ser objeto ou `null`; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados foram aprovados (5/5): status code 200, tempo de execução < 1000ms, array não vazio, e cada objeto validado com `id`/`name` como string e `data` como objeto ou `null`|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-001-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-001-test-results.png)|
  
 ---
  
