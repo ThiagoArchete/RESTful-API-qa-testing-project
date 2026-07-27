@@ -23,6 +23,8 @@ Para validar os casos de teste e critérios de aceite, criei scripts automatizad
 
 Todas as requisições da coleção são validadas quanto a tempo de resposta < 1000ms via script de nível de coleção.
 
+Durante a execução dos casos de teste, o caso CT-API-004 previamente foi criado para veriricar a resposta da API quanto a um formato de ID inesperado, com caracteres especiais, porém ele foi substituído por 004a–004c após identificação de que 'ID em formato inesperado' cobria categorias de entrada com semânticas de URL diferentes
+
 ## 4. Ambiente e ferramentas
 
 - Postman | Última versão disponibilizada
