@@ -45,8 +45,6 @@ Cada subpasta (`/sistema1`, `/sistema2`, etc.) segue o mesmo padrão interno, pa
 | **Relatórios de Bugs** | `/web` e `/api` |
 | **Casos de teste com evidências** | `/web` e `/api` |
  
-> **Roadmap declarado:** automação de testes (Cypress/Playwright para web, testes automatizados de API) está em estudo e será incorporada ao portfólio conforme amadurece — sem entrar aqui antes de existir de fato.
- 
 ---
  
 ## 🛠️ Tecnologias & Ferramentas
