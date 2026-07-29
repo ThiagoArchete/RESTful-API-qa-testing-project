@@ -112,8 +112,8 @@
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;}<br>}</pre> |
 | **Status Code Esperado** | `201 Created` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "&lt;dinâmico&gt;",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"createdAt": "&lt;dinâmico&gt;"<br>}</pre> |
-| **Critérios de Aceite / Validações** | `id` gerado é string não vazia; `name` e `data` no response são idênticos ao request; `createdAt` é um timestamp válido; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | Quatro testes passaram e um foi rejeitado (4/5) - Os válidos foram: tempo de execução < 1000ms, `id` gerado é uma string não vazia, `name` e `data` no response são idênticos ao request e `createdAt` é um timestamp válido. O teste inválido foi o status code, o esperado seria `201 Created` por ter criado um objeto na base de dados.|
+| **Critérios de Aceite / Validações** | `id` gerado é string não vazia; `name` e `data` no response são idênticos ao request; `createdAt` é uma string em formato ISO 8601 válida; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Três testes passaram e dois foram rejeitados (3/5) - Os válidos foram: tempo de execução < 1000ms, `id` gerado é uma string não vazia e `name` e `data` no response são idênticos ao request. Os testes inválidos foram: status code, o esperado seria `201 Created` por ter criado um objeto na base de dados, mas o do sistema foi `200 OK`; O segundo teste inválidado foi o `createdAt` deveria ser uma string no formato ISO 8601, conforme está na documentação, porém a API retorna um formato diferente númerico. |
 | **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-005-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-005-test-results.png)|
 
 ---
@@ -126,46 +126,33 @@
 | **Pré-condições** | Nenhuma |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019<br>&nbsp;&nbsp;}<br>}</pre> |
-| **Status Code Esperado** | `400 Bad Request` — **atenção:** a documentação fornecida não declara `name` como obrigatório nem descreve regras de validação. Esta é uma expectativa assumida, não confirmada. Ao executar, registrar o status real (esta API sandbox é conhecida por ser permissiva e pode aceitar/gerar `name` vazio com `201`) |
-| **Response Body Esperada** | A confirmar na execução |
-| **Critérios de Aceite / Validações** | Se a API validar: mensagem de erro clara referenciando o campo `name`. Se a API não validar: registrar como gap de validação a ser reportado, não como teste "passou"; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Status Code Esperado** | `400 Bad Request` |
+| **Response Body Esperada** | A verificar  |
+| **Critérios de Aceite / Validações** | status code deve ser `400 Bad Request`, pois é uma falha na integridade dos dados permitir que um objeto seja cadastrado sem o nome |
+| **Resultado Atual** | Um teste automatizado passou e um falhou (1/2) - O tempo de execução < 1000ms foi validado corretamente, enquanto o status code retornado foi `200 OK` ao invés de `400 Bad Request` e o objeto foi criado com o campo `name` como `null`|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-006-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-006-test-results.png)|
 
----
- 
-### CT-API-007 — Criar objeto com payload de `data` grande e aninhado
- 
-| Campo | Detalhes |
-| :--- | :--- |
-| **Endpoint** | `POST` `/objects` |
-| **Pré-condições** | Nenhuma |
-| **Request Headers** | `Content-Type: application/json` |
-| **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Stress Test Object",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"specs": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"level1": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"level2": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"level3": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"value": "teste de aninhamento"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;"tags": ["a", "b", "c", "... (100+ itens)"]<br>&nbsp;&nbsp;}<br>}</pre> |
-| **Status Code Esperado** | `201 Created` (a confirmar se há limite de tamanho de payload documentado) |
-| **Response Body Esperada** | Objeto criado com `data` preservando integralmente a estrutura enviada |
-| **Critérios de Aceite / Validações** | Estrutura aninhada não é truncada nem corrompida no retorno; se houver limite de tamanho, API deve responder `413 Payload Too Large` de forma explícita, não com erro genérico `500`; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
- 
 ---
  
 ## 4. PUT /objects/{id}
  
-### CT-API-008 — Substituir integralmente um objeto existente
+### CT-API-007 — Substituir inteiramente um objeto existente
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `PUT` `/objects/7` |
-| **Pré-condições** | Objeto com `id = 7` existente no banco |
+| **Endpoint** | `PUT` `/objects/{id de um objeto criado}` |
+| **Pré-condições** | Possuir um objeto cadastrado no banco, que não seja um objeto padrão que já vem cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
-| **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 2049.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB",<br>&nbsp;&nbsp;&nbsp;&nbsp;"color": "silver"<br>&nbsp;&nbsp;}<br>}</pre> |
+| **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Iphone 17 Pro Max",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2025,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 12.500,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Apple A19 Pro",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "256 GB",<br>&nbsp;&nbsp;&nbsp;&nbsp;"color": "silver"<br>&nbsp;&nbsp;}<br>}</pre> |
 | **Status Code Esperado** | `200 OK` |
-| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "7",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 2049.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB",<br>&nbsp;&nbsp;&nbsp;&nbsp;"color": "silver"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"updatedAt": "&lt;dinâmico&gt;"<br>}</pre> |
-| **Critérios de Aceite / Validações** | `id` inalterado; todos os campos de `data` refletem exatamente o que foi enviado; `updatedAt` atualizado; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "{dinâmico}",<br>&nbsp;&nbsp;"name": "Iphone 17 Pro Max",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2025,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 12.500,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Apple A19 Pro",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "256 GB",<br>&nbsp;&nbsp;&nbsp;&nbsp;"color": "silver"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"updatedAt": "&lt;dinâmico&gt;"<br>}</pre> |
+| **Critérios de Aceite / Validações** | `id` inalterado; todos os campos de `data` refletem exatamente o que foi enviado; `updatedAt` atualizado e difere do tempo do `createdAt` quado o objeto foi criado; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (5/5) - tempo de execução < 1000ms, status code `200 OK`, `id` do objeto permanece inalterado, os campos de `data` refletem o que foi enviado e o campo `updatedAt` é maior do que o valor de `createdAt` |
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-007-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-007-test-results.png)|
 
 ---
  
-### CT-API-009 — Tentar atualizar objeto com ID inexistente
+### CT-API-008 — Tentar atualizar objeto com ID inexistente
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -180,7 +167,7 @@
 
 ---
  
-### CT-API-010 — Verificar se `PUT` com body parcial remove os campos omitidos
+### CT-API-009 — Verificar se `PUT` com body parcial remove os campos omitidos
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -197,7 +184,7 @@
  
 ## 5. PATCH /objects/{id}
  
-### CT-API-011 — Atualizar somente o campo `name`, preservando `data`
+### CT-API-010 — Atualizar somente o campo `name`, preservando `data`
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -212,7 +199,7 @@
 
 ---
  
-### CT-API-012 — Tentar atualização parcial em ID inexistente
+### CT-API-011 — Tentar atualização parcial em ID inexistente
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -227,7 +214,7 @@
 
 ---
  
-### CT-API-013 — Enviar `PATCH` sem nenhum campo no body
+### CT-API-012 — Enviar `PATCH` sem nenhum campo no body
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -244,7 +231,7 @@
  
 ## 6. DELETE /objects/{id}
  
-### CT-API-014 — Remover um objeto existente com sucesso
+### CT-API-013 — Remover um objeto existente com sucesso
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -259,7 +246,7 @@
 
 ---
  
-### CT-API-015 — Tentar deletar objeto que não existe
+### CT-API-014 — Tentar deletar objeto que não existe
  
 | Campo | Detalhes |
 | :--- | :--- |
@@ -274,7 +261,7 @@
 
 ---
  
-### CT-API-016 — Deletar o mesmo objeto duas vezes em sequência rápida
+### CT-API-015 — Deletar o mesmo objeto duas vezes em sequência rápida
  
 | Campo | Detalhes |
 | :--- | :--- |
