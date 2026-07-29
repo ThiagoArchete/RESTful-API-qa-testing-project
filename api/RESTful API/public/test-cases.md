@@ -160,10 +160,11 @@
 | **Pré-condições** | ID `999999999` garantidamente não cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Objeto Fantasma",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2024<br>&nbsp;&nbsp;}<br>}</pre> |
-| **Status Code Esperado** | `404 Not Found` — a confirmar se a API cria o recurso via *upsert* em vez de retornar erro (comportamento não documentado) |
-| **Response Body Esperada** | A confirmar na execução |
-| **Critérios de Aceite / Validações** | API não deve criar silenciosamente um novo recurso sob um `PUT` de ID inexistente sem deixar isso explícito no contrato; se o comportamento for *upsert*, isso deve ser documentado como regra de negócio, não assumido; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Status Code Esperado** | `404 Not Found`|
+| **Response Body Esperada** | Erro informando que o objeto não existe. |
+| **Critérios de Aceite / Validações** | API retorna erro informando que o objeto com o `id` inserido não existe; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (3/3) - tempo de execução < 1000ms, status code `404 Not Found` e a response body retorna mensagem de erro identificando o ID correto buscado e informando que o mesmo não existe|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-008-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-008-test-results.png)|
 
 ---
  
@@ -171,15 +172,16 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `PUT` `/objects/7` |
-| **Pré-condições** | Objeto com `id = 7` existente e com múltiplos campos em `data` |
+| **Endpoint** | `PUT` `/objects/{id de um objeto criado}` |
+| **Pré-condições** | Possuir um objeto cadastrado no banco, que não seja um objeto padrão que já vem cadastrado, com múltiplos campos em `data` |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16"<br>}</pre> |
 | **Status Code Esperado** | `200 OK` |
 | **Response Body Esperada** | Objeto com `data` ausente ou `null` (comportamento esperado de um `PUT` semanticamente correto, que substitui o recurso por completo) |
-| **Critérios de Aceite / Validações** | Confirma se a API trata `PUT` como substituição total (RFC 7231) — campos de `data` não enviados devem desaparecer, diferente do comportamento esperado em `PATCH`; se a API mantiver os campos antigos, isso indica que `PUT` e `PATCH` estão implementados de forma equivalente, o que é uma inconsistência a ser reportada; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
- 
+| **Critérios de Aceite / Validações** | Campos de `data` não enviados devem desaparecer; campo `name` deve permanecer inalterado; response body deve identificar o `id` atualizado; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (5/5) - tempo de execução < 1000ms, status code `200 OK`, campo `data` se tornou `null`, campo `name` permaneceu inalterado e o `id` do objeto atualizado na response body é o mesmo inserido na URL da requisição |
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-009-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-009-test-results.png)|
+
 ---
  
 ## 5. PATCH /objects/{id}
