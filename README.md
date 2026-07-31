@@ -13,18 +13,6 @@ A documentação completa (plano de testes, casos de teste, evidências e relat�
 | Endpoints públicos (6) | ✅ Concluído — 15 casos de teste, 65 testes automatizados |
 | Endpoints autenticados (9) | ⏳ Em andamento |
 
-## Resultados até o momento
-
-**2 bugs documentados** ([bug-reports](./docs/bug-reports)):
-- Campos `createdAt` / `updatedAt` retornados em formato epoch numérico, divergindo do formato ISO 8601 documentado pela API.
-- `PATCH` com corpo vazio retorna `404 Not Found` com mensagem referente a corpo inválido — o esperado seria `400 Bad Request`.
-
-**2 itens registrados em sugestões/gaps** ([suggestions](./docs/suggestions)):
-- `POST /objects` retorna `200 OK` em vez de `201 Created`. Não é tratado como bug porque a documentação da API não especifica explicitamente o status code esperado para criação.
-- Campo `name` é aceito como `null` sem validação de contrato.
-
-Das 65 asserções automatizadas executadas na collection completa, **4 falharam** na primeira execução — todas investigadas e mapeadas para os itens acima (2 bugs + 2 sugestões), sem falhas atribuídas a erro de script.
-
 ## Ferramentas
 
 - Postman Desktop v12.21.2
