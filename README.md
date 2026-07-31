@@ -1,66 +1,58 @@
-# 🧪 Portfólio de QA — Thiago Archete
+# RESTful API — Testes de API Pública (restful-api.dev)
 
-> **Qualidade não é uma fase do projeto. É um critério de aceite em cada entrega.**
- 
-Este repositório reúne testes práticos — manuais e de API — realizados em sistemas web e APIs públicas, com o objetivo de demonstrar raciocínio de teste, organização de artefatos e disciplina de documentação no dia a dia de QA.
- 
----
- 
-## 📌 Sobre o Portfólio
- 
-A maior parte do aprendizado em QA acontece testando sistemas reais, não lendo sobre eles. Este repositório existe por três motivos:
- 
-- **Validar teoria em cenários reais** — aplicar técnicas de teste (funcional, exploratório, BDD) em sistemas e APIs que eu não desenvolvi, simulando o contexto real de um QA entrando em um produto já existente.
-- **Treino contínuo** — cada pasta representa um ciclo de estudo: planejamento, execução, registro de evidências e retrospectiva.
-- **Expor artefatos, não promessas** — em vez de listar "conheço testes de API" no currículo, este repositório mostra planos de teste, coleções do Postman e relatórios de bugs reais.
-> Cada subpasta documenta não só **o que** foi testado, mas **por que** aquele caso de teste existe.
- 
----
- 
-## 🗂️ Estrutura & Navegação
- 
-```
-/portfolio-qa
- ├── README.md          → Visão geral do portfólio e guia de navegação
- ├── /web                → Testes e validações em interfaces web
- │    ├── /sistema1
- │    └── /sistema2
- └── /api                → Testes e coleções de APIs públicas
-      ├── /sistema1
-      └── /sistema2
-```
- 
-- **`/web`** — testes funcionais e exploratórios em interfaces web reais (ou de prática pública). Cada subpasta contém o plano de teste, os cenários cobertos e as evidências (prints, vídeos ou logs) coletadas durante a execução.
-- **`/api`** — testes de API contra endpoints públicos, com coleções versionadas do Postman, casos de validação de contrato/response e registro de bugs encontrados.
-Cada subpasta (`/sistema1`, `/sistema2`, etc.) segue o mesmo padrão interno, para manter a navegação previsível independente do sistema testado.
- 
----
- 
-## 🔍 O que Você Vai Encontrar
- 
-| Artefato | Onde |
+## Sobre o projeto
+
+Este repositório documenta a suíte de testes funcionais construída para a API pública [restful-api.dev](https://restful-api.dev/), cobrindo os 6 endpoints públicos com 15 casos de teste e 65 asserções automatizadas em Postman. O objetivo é demonstrar, na prática, planejamento de testes, design de casos, execução com evidências e reporte estruturado de defeitos.
+
+A documentação completa (plano de testes, casos de teste, evidências e relatórios de bugs) está organizada nas pastas listadas em [Estrutura do repositório](#estrutura-do-repositório).
+
+## Status
+
+| Bloco | Status |
 |---|---|
-| **Planos de Teste** | `/web` e `/api` |
-| **Coleções do Postman** | `/api` |
-| **Relatórios de Bugs** | `/web` e `/api` |
-| **Casos de teste com evidências** | `/web` e `/api` |
- 
----
- 
-## 🛠️ Tecnologias & Ferramentas
- 
-![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white)
-![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)
-![SQL](https://img.shields.io/badge/SQL-4479A1?style=flat&logo=postgresql&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
-![Gherkin](https://img.shields.io/badge/BDD%2FGherkin-23A18C?style=flat)
- 
-**Testes manuais e exploratórios** · **Testes de API** (validação de contrato, status codes, payloads) · **Gestão de casos de teste e Rastreamento de bbugs** (Markdown) · **Consultas SQL** para validação de dados.
- 
----
- 
-## 🤝 Contato
- 
-Aberto a conversas sobre oportunidades em QA, feedback sobre este portfólio ou trocas com outros profissionais da área.
- 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/thiago-archete/)
+| Endpoints públicos (6) | ✅ Concluído — 15 casos de teste, 65 testes automatizados |
+| Endpoints autenticados (9) | ⏳ Em andamento |
+
+## Resultados até o momento
+
+**2 bugs documentados** ([bug-reports](./docs/bug-reports)):
+- Campos `createdAt` / `updatedAt` retornados em formato epoch numérico, divergindo do formato ISO 8601 documentado pela API.
+- `PATCH` com corpo vazio retorna `404 Not Found` com mensagem referente a corpo inválido — o esperado seria `400 Bad Request`.
+
+**2 itens registrados em sugestões/gaps** ([suggestions](./docs/suggestions)):
+- `POST /objects` retorna `200 OK` em vez de `201 Created`. Não é tratado como bug porque a documentação da API não especifica explicitamente o status code esperado para criação.
+- Campo `name` é aceito como `null` sem validação de contrato.
+
+Das 65 asserções automatizadas executadas na collection completa, **4 falharam** na primeira execução — todas investigadas e mapeadas para os itens acima (2 bugs + 2 sugestões), sem falhas atribuídas a erro de script.
+
+## Ferramentas
+
+- Postman Desktop v12.21.2
+- Windows 10
+
+## Estrutura do repositório
+
+```
+/RESTful API
+├── README.md
+├── /postman-collection
+│   └── collection.json
+└── /docs
+    ├── /test-plan       -> Plano de testes completo
+    ├── /test-cases      -> Casos de teste estruturados e executados, com evidências
+    ├── /bug-reports     -> Bugs/defeitos encontrados durante os testes
+    ├── /suggestions     -> Sugestões de melhoria e gaps identificados (não são bugs formais)
+    └── /evidences       -> Prints e evidências de execução
+```
+
+## Como rodar os testes
+
+1. Importe `postman-collection/collection.json` no Postman.
+2. Os endpoints públicos (pasta `Public`) não exigem configuração adicional — a collection já valida tempo de resposta (< 1000ms) e contrato de resposta automaticamente.
+3. Os endpoints autenticados (pasta `Authenticated`) ainda estão em construção. Quando finalizados, será necessário importar um environment e executar a requisição de login previamente para popular o token de acesso — instruções detalhadas serão adicionadas neste README nessa etapa.
+
+## Decisões de escopo e design
+
+- Testes de segurança e de performance/carga estão fora do escopo deste projeto (detalhes em [`docs/test-plan`](./docs/test-plan)).
+- Os casos de teste foram levantados a partir da documentação oficial da API, priorizando cenários de sucesso, erro esperado e variações relevantes de entrada. A definição dos casos foi conduzida de forma exploratória, sem aplicação formal de técnicas de design como partição de equivalência ou análise de valor limite.
+- O caso CT-API-004 (ID em formato inesperado) foi desmembrado em CT-API-004a–004c após identificar que a categoria original cobria variações de entrada com semânticas de URL distintas. Detalhes em [`docs/test-cases`](./docs/test-cases).

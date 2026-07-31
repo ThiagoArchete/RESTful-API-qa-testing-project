@@ -1,20 +1,5 @@
 # Bug Reports — API `https://api.restful-api.dev`
 
-## Modelo
-| Campo | Detalhes |
-| :--- | :--- |
-| **Título** |  |
-| **Casos de Teste Relacionados** |  |
-| **Endpoint** |  |
-| **Severidade** |  |
-| **Prioridade** |  |
-| **Ambiente** |  |
-| **Pré-condições** |  |
-| **Passo a passo** |  |
-| **Resultado Esperado** |  |
-| **Resultado Obtido** |  |
-| **Evidências** |  |
-
 ## BUG-001
 
 | Campo | Detalhes |
@@ -29,7 +14,7 @@
 | **Passo a passo** | Realizar `POST /objects` com um corpo válido (`name` e `data`) e inspecionar o campo `createdAt` na resposta *E/OU* realizar `PUT /objects/{id}` e inspecionar o campo `updatedAt` na resposta|
 | **Resultado Esperado** | String no formato ISO 8601 (ex: `2022-11-21T20:06:23.986Z`), conforme documentado no endpoint |
 | **Resultado Obtido** | Número inteiro representando epoch em milissegundos (ex: `1785191908251`) — tipo e formato divergentes do documentado |
-| **Evidências** | [Request/Response - POST](../public/evidences/bug-reports/BUG-001-request-response.png) · [Exemplo de response - POST](../public/evidences/bug-reports/BUG-001-response-example.png)| [Request/Response - PUT](../public/evidences/bug-reports/BUG-001-request-response-PUT.png) · [Exemplo de response - PUT](../public/evidences/bug-reports/BUG-001-response-example-PUT.png)|
+| **Evidências** | [Request/Response - POST](/evidences/bug-reports/BUG-001-request-response.png) · [Exemplo de response - POST](/evidences/bug-reports/BUG-001-response-example.png)| [Request/Response - PUT](/evidences/bug-reports/BUG-001-request-response-PUT.png) · [Exemplo de response - PUT](/evidences/bug-reports/BUG-001-response-example-PUT.png)|
 
 ---
 
@@ -47,4 +32,4 @@
 | **Passo a passo** | Realizar a requisição `PATCH /objects/{id}` com ID existente com um body request vazio `{}` |
 | **Resultado Esperado** | `400 Bad Request` — o erro é de requisição malformada (corpo sem campos válidos) |
 | **Resultado Obtido** | `404 Not Found`, com corpo: `{"error": "No valid field(s) to update have been passed as part of a request body."}` — status code inconsistente com a própria mensagem de erro retornada |
-| **Evidências** | [Request/Response](../public/evidences/bug-reports/BUG-002-request-response.png) |
+| **Evidências** | [Request/Response](/evidences/bug-reports/BUG-002-request-response.png)|
