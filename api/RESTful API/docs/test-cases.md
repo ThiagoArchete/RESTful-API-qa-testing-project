@@ -128,7 +128,7 @@
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019<br>&nbsp;&nbsp;}<br>}</pre> |
 | **Status Code Esperado** | `400 Bad Request` |
 | **Response Body Esperada** | A verificar  |
-| **Critérios de Aceite / Validações** | status code deve ser `400 Bad Request`, pois é uma falha na integridade dos dados permitir que um objeto seja cadastrado sem o nome |
+| **Critérios de Aceite / Validações** | status code deveria ser `400 Bad Request`, dado que name é o campo identificador do recurso — documentação não especifica obrigatoriedade |
 | **Resultado Atual** | Um teste automatizado passou e um falhou (1/2) - O tempo de execução < 1000ms foi validado corretamente, enquanto o status code retornado foi `200 OK` ao invés de `400 Bad Request` e o objeto foi criado com o campo `name` como `null`|
 | **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-006-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-006-test-results.png)|
 
@@ -190,14 +190,15 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `PATCH` `/objects/7` |
-| **Pré-condições** | Objeto com `id = 7` existente no banco |
+| **Endpoint** | `PATCH` `/objects/{id de um objeto criado}` |
+| **Pré-condições** | Possuir um objeto cadastrado no banco, que não seja um objeto padrão que já vem cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16 (Updated Name)"<br>}</pre> |
 | **Status Code Esperado** | `200 OK` |
-| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "7",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16 (Updated Name)",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"updatedAt": "&lt;dinâmico&gt;"<br>}</pre> |
-| **Critérios de Aceite / Validações** | Apenas `name` muda; `data` permanece idêntico ao estado anterior; `updatedAt` é atualizado; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"id": "{dinâmico}",<br>&nbsp;&nbsp;"name": "Apple MacBook Pro 16 (Updated Name)",<br>&nbsp;&nbsp;"data": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"year": 2019,<br>&nbsp;&nbsp;&nbsp;&nbsp;"price": 1849.99,<br>&nbsp;&nbsp;&nbsp;&nbsp;"CPU model": "Intel Core i9",<br>&nbsp;&nbsp;&nbsp;&nbsp;"Hard disk size": "1 TB"<br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;"updatedAt": "&lt;dinâmico&gt;"<br>}</pre> |
+| **Critérios de Aceite / Validações** | Apenas `name` muda e `data` permanece idêntico ao estado anterior; `id` identificado na response é o mesmo na URL da request; `updatedAt` é atualizado; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (5/5) - tempo de execução < 1000ms, status code `200 OK`, apenas o campo `name` é alterado e a `data` se mantém, o `id` do objeto atualizado na response body é o mesmo inserido na URL da requisição e o campo `updatedAt` é maior do que o valor de `createdAt`|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-010-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-010-test-results.png) · [Pre-request Script](../public/evidences/test-cases/CT-API-010-pre-request-script.png)|
 
 ---
  
@@ -212,7 +213,8 @@
 | **Status Code Esperado** | `404 Not Found` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "Object with id=999999999 was not found."<br>}</pre> |
 | **Critérios de Aceite / Validações** | Status `404`; mensagem de erro consistente com a de `GET`/`PUT` para o mesmo cenário (checa padronização entre endpoints); tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Resultado Atual** | Todos os testes automatizados passaram (3/3) - tempo de execução < 1000ms, status code `404 Not Found` e a response body retorna mensagem de erro identificando o ID correto buscado e informando que o mesmo não existe, mesmo padrão das rotas `GET` e `PUT`.|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-011-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-011-test-results.png)|
 
 ---
  
@@ -220,15 +222,16 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `PATCH` `/objects/7` |
-| **Pré-condições** | Objeto com `id = 7` existente no banco |
+| **Endpoint** | `PATCH` `/objects/{id de um objeto criado}` |
+| **Pré-condições** | Possuir um objeto cadastrado no banco, que não seja um objeto padrão que já vem cadastrado |
 | **Request Headers** | `Content-Type: application/json` |
 | **Request Body** | <pre>{}</pre> |
-| **Status Code Esperado** | `200 OK` (a confirmar se a API rejeita body vazio com `400`) |
-| **Response Body Esperada** | Objeto retornado idêntico ao estado anterior, exceto possivelmente `updatedAt` |
-| **Critérios de Aceite / Validações** | Nenhum campo do objeto é alterado ou apagado; se `updatedAt` mudar mesmo sem alteração real de dado, isso é um comportamento a ser questionado; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
- 
+| **Status Code Esperado** | `400 Bad Request` |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "No valid field(s) to update have been passed as part of a request body."<br>}</pre> |
+| **Critérios de Aceite / Validações** | Response retorna erro informando que nenhum campo válido para atualizar foi passado na request body; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Três testes automatizados passaram e um falhou (3/4) - Os válidos foram: tempo de execução < 1000ms, response body possui somente o campo `error` e a mensagem de erro é a response esperada. O teste que falhou foi o do status code esperado, onde foi retornado o código `404 Not Found`, o que não faz sentido porque o `id` inserido na URL da request existe na base de dados, um bug será documentado sobre esse caso.|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-012-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-012-test-results.png)|
+
 ---
  
 ## 6. DELETE /objects/{id}
@@ -237,14 +240,15 @@
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `DELETE` `/objects/6` |
-| **Pré-condições** | Objeto com `id = 6` existente no banco |
+| **Endpoint** | `DELETE` `/objects/{id de um objeto criado}` |
+| **Pré-condições** | Possuir um objeto cadastrado no banco, que não seja um objeto padrão que já vem cadastrado |
 | **Request Headers** | Nenhum obrigatório |
 | **Request Body** | N/A |
 | **Status Code Esperado** | `200 OK` |
-| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"message": "Object with id = 6, has been deleted."<br>}</pre> |
-| **Critérios de Aceite / Validações** | Mensagem confirma o `id` deletado; um `GET /objects/6` subsequente deve retornar `404` (checagem cruzada entre endpoints); tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"message": "Object with id = {id}, has been deleted."<br>}</pre> |
+| **Critérios de Aceite / Validações** | Response confirma o `id` deletado; um `GET /objects/{id}` subsequente deve retornar `404`; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (4/4) - tempo de execução < 1000ms, status code `200 OK`, a `responde body` confirma o `id` deletado igual ao inserido na URL da request, e o último teste automatizado foi inserido em uma requisição `GET` em sequência ao `DELETE` com uma automação para verificar se o status code é `404 Not Found`, foi feito dessa forma para automatizar no momento da collection run. |
+| **Evidências** | [Request/Response (DELETE)](../public/evidences/test-cases/CT-API-013-request-response.png) · [Test Results (DELETE)](../public/evidences/test-cases/CT-API-013-test-results.png) · [Request/Response (GET)](../public/evidences/test-cases/CT-API-013b-request-response.png) · [Test Result (GET)](../public/evidences/test-cases/CT-API-013b-test-results.png)| 
 
 ---
  
@@ -258,20 +262,22 @@
 | **Request Body** | N/A |
 | **Status Code Esperado** | `404 Not Found` |
 | **Response Body Esperada** | <pre>{<br>&nbsp;&nbsp;"error": "Object with id=999999999 was not found."<br>}</pre> |
-| **Critérios de Aceite / Validações** | Status `404`; API não retorna `200` com mensagem de sucesso para um recurso que nunca existiu; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Critérios de Aceite / Validações** | Status `404`; response identifica que o `id` buscado não existe; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (3/3) - tempo de execução < 1000ms, status code `404 Not Found` e a response body retorna mensagem de erro identificando o ID correto buscado e informando que o mesmo não existe, mesmo padrão das rotas `GET`, `PUT` e `PATCH`. |
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-014-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-014-test-results.png)| 
 
 ---
  
-### CT-API-015 — Deletar o mesmo objeto duas vezes em sequência rápida
+### CT-API-015 — Tentar deletar sem inserir um ID
  
 | Campo | Detalhes |
 | :--- | :--- |
-| **Endpoint** | `DELETE` `/objects/8` (executado duas vezes, a segunda imediatamente após a primeira) |
-| **Pré-condições** | Objeto com `id = 8` existente no banco antes da primeira chamada |
+| **Endpoint** | `DELETE` `/objects/` |
+| **Pré-condições** | Nenhuma obrigatória  |
 | **Request Headers** | Nenhum obrigatório |
 | **Request Body** | N/A |
-| **Status Code Esperado** | 1ª chamada: `200 OK`. 2ª chamada: `404 Not Found` |
-| **Response Body Esperada** | 1ª: mensagem de sucesso. 2ª: mensagem de "não encontrado" |
-| **Critérios de Aceite / Validações** | A segunda chamada não deve retornar `200` novamente (idempotência mal implementada seria um bug); nota: como esta é uma API pública compartilhada, o teste real de concorrência (2 requisições simultâneas) é mais confiável em uma instância dedicada/mockada do que neste sandbox público; tempo de resposta deve ser menor que 1000ms |
-| **Resultado Atual** | |
+| **Status Code Esperado** | `405 Method Not Allowed` |
+| **Response Body Esperada** | À confirmar na execução |
+| **Critérios de Aceite / Validações** | A response informa que o método não é permitido; tempo de resposta deve ser menor que 1000ms |
+| **Resultado Atual** | Todos os testes automatizados passaram (3/3) - tempo de execução < 1000ms, status code `405 Method Not Allowed` e a response body retorna mensagem de erro informando que o método não é permitido.|
+| **Evidências** | [Request/Response](../public/evidences/test-cases/CT-API-015-request-response.png) · [Test Results](../public/evidences/test-cases/CT-API-015-test-results.png)| 
