@@ -1,0 +1,977 @@
+{
+  "info": {
+    "_postman_id": "2be69d09-6e8d-47ac-a0de-d00f16728156",
+    "name": "restful-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54841522",
+    "_collection_link": "https://go.postman.co/collection/54841522-2be69d09-6e8d-47ac-a0de-d00f16728156?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get All Objects - CT-API-001",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-001.01: Status code é 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"CT-API-001.02: Resposta deve ser array não vazio\", function () {\r",
+              "        pm.expect(responseJson).to.be.an('array');\r",
+              "        pm.expect(responseJson.length).to.be.above(0);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"CT-API-001.03: Cada objeto possui 'id' e 'name' como string\", function() {\r",
+              "    responseJson.forEach(item => {\r",
+              "        pm.expect(item).to.have.property(\"id\").that.is.a(\"string\");\r",
+              "        pm.expect(item).to.have.property(\"name\").that.is.a(\"string\");\r",
+              "    })\r",
+              "});\r",
+              "\r",
+              "pm.test(\"CT-API-001.04: Cada objeto possui 'data' como objeto ou null\", function() {\r",
+              "    responseJson.forEach(item => {\r",
+              "        pm.expect(item).to.have.property(\"data\");\r",
+              "        pm.expect(item.data === null || typeof item.data === \"object\").to.be.true;\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Object - CT-API-005",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseJson = pm.response.json();",
+              "",
+              "const requestBody = JSON.parse(pm.request.body.raw);",
+              "",
+              "pm.environment.set(\"generatedId\", responseJson.id);",
+              "pm.environment.set(\"createdObject\", JSON.stringify(requestBody));",
+              "pm.environment.set(\"createdTime\", responseJson.createdAt);",
+              "",
+              "pm.test(\"CT-API-005.1: Status code é 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"CT-API-005.2: ID gerado é uma string não vazia\", function () {",
+              "    pm.expect(responseJson.id).to.be.a('string').and.not.be.empty;",
+              "});",
+              "",
+              "pm.test(\"CT-API-005.3: Nome e Data enviados no request body são iguais ao do response\", function () {",
+              "    pm.expect(responseJson.name).to.be.equal(requestBody.name);",
+              "    pm.expect(responseJson.data).to.deep.equal(requestBody.data);",
+              "});",
+              "",
+              "pm.test(\"CT-API-005.4: createdAt é uma string em formato ISO 8601 válida\", function () {",
+              "    pm.expect(responseJson).to.have.property(\"createdAt\");",
+              "    pm.expect(responseJson.createdAt).to.be.a(\"string\");",
+              "    pm.expect(responseJson.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$/);",
+              "",
+              "    const date = new Date(responseJson.createdAt);",
+              "    pm.expect(date.toString()).to.not.equal(\"Invalid Date\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Apple MacBook Pro 16\",\r\n  \"data\": {\r\n    \"year\": 2019,\r\n    \"price\": 1849.99,\r\n    \"CPU model\": \"Intel Core i9\",\r\n    \"Hard disk size\": \"1 TB\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Object - CT-API-006",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-006: Status code é 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"data\": {\r\n    \"year\": 2019\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Object - CT-API-002",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const responseJson = pm.response.json();",
+              "",
+              "const createdObject = JSON.parse(pm.environment.get(\"createdObject\"));",
+              "",
+              "pm.test(\"CT-API-002.01: Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"CT-API-002.02: ID retornado é igual ao solicitado\", () => {",
+              "    pm.expect(responseJson.id.toString()).to.eql(pm.environment.get(\"generatedId\"));",
+              "});",
+              "",
+              "pm.test(\"CT-API-002.03: Name do objeto é uma String não vazia\", () => {",
+              "    pm.expect(responseJson.name).to.be.a(\"String\");",
+              "    pm.expect(responseJson.name.trim()).to.not.equal(\"\");",
+              "});",
+              "",
+              "pm.test(\"CT-API-002.04: Estrutura do objeto corresponde ao que foi criado\", () => {",
+              "    pm.expect(responseJson.name).to.equal(createdObject.name);",
+              "    pm.expect(responseJson.data).to.deep.equal(createdObject.data);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Object - CT-API-003",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-003.1: Status code é 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const nonExistentId = pm.environment.get(\"nonExistentId\");",
+              "",
+              "pm.test(\"CT-API-003.2: Mensagem de erro identifica o ID buscado e não contém nenhum outro dado sensível\", function () {",
+              "    pm.expect(responseJson.error).to.equal(`Object with id=${nonExistentId} was not found.`);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects/{{nonExistentId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{nonExistentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Object - CT-API-004a",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-004a.1: Status code é 404 Not Found\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"CT-API-004a.2: Mensagem de erro identifica o ID buscado e não contém nenhum outro dado sensível\", function () {\r",
+              "    pm.expect(responseJson.error).to.equal(`Object with id=! was not found.`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects/!",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "!"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Object - CT-API-004b",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-004b.1: Status code é 404 Not Found\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"CT-API-004b.2: Mensagem de erro identifica o ID codificado e não contém nenhum outro dado sensível\", function () {\r",
+              "    pm.expect(responseJson.error).to.equal(`Object with id=# was not found.`);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects/%23",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "%23"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Object - CT-API-004c",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-004c.1: Status code é 400 Bad Request\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"CT-API-004c.02: Corpo da resposta indica requisição malformada\", function () {\r",
+              "    const responseText = pm.response.text();\r",
+              "    pm.expect(responseText).to.include(\"400\");\r",
+              "    pm.expect(responseText.toLowerCase()).to.include(\"bad request\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/objects/%",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "%"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Object - CT-API-007",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-007.1: Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const requestBody = JSON.parse(pm.request.body.raw);",
+              "",
+              "pm.test(\"CT-API-007.2: 'id' do objeto permanece inalterado\", function () {",
+              "    pm.expect(responseJson.id.toString()).to.eql(pm.environment.get(\"generatedId\"));",
+              "});",
+              "",
+              "pm.test(\"CT-API-007.3: Todos os campos de 'data' refletem ao que foi enviado no request body\", function () {",
+              "    pm.expect(responseJson.data).to.deep.equal(requestBody.data);",
+              "});",
+              "",
+              "pm.test(\"CT-API-007.4: 'updatedAt' é maior do que o valor de 'createdAt' retornado no Body Response do métdo POST após criar o objeto\", function () {",
+              "    const previousTimestamp = pm.environment.get(\"createdTime\");",
+              "    pm.expect(responseJson.updatedAt).to.not.equal(previousTimestamp);",
+              "    pm.expect(Number(responseJson.updatedAt)).to.be.greaterThan(Number(previousTimestamp));",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Iphone 17 Pro Max\",\r\n  \"data\": {\r\n    \"year\": 2025,\r\n    \"price\": 12.599,\r\n    \"CPU model\": \"Apple A19 Pro\",\r\n    \"Hard disk size\": \"256 GB\",\r\n    \"color\": \"silver\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Object - CT-API-008",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-008.1: Status code é 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const nonExistentId = pm.environment.get(\"nonExistentId\");",
+              "",
+              "pm.test(\"CT-API-008.2: Mensagem de erro identifica que o 'id' buscado não existe\", function () {",
+              "    pm.expect(responseJson).to.have.property(\"error\");",
+              "    pm.expect(responseJson.error).to.include(`id = ${nonExistentId}`);",
+              "    pm.expect(responseJson.error).to.include(\"doesn't exist.\");",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Objeto Fantasma\",\r\n  \"data\": {\r\n    \"year\": 2024\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{nonExistentId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{nonExistentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Object - CT-API-009",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-009.1: Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const requestBody = JSON.parse(pm.request.body.raw);",
+              "const generatedId = pm.environment.get(\"generatedId\");",
+              "",
+              "pm.test(\"CT-API-009.2: Campo 'data' deve se tornar null\", function () {",
+              "    pm.expect(responseJson.data).to.equal(null);",
+              "});",
+              "",
+              "pm.test(\"CT-API-009.3: Campo de 'name' deve permanecer inalterado\", function () {",
+              "    pm.expect(responseJson.name).to.equal(requestBody.name);",
+              "});",
+              "",
+              "pm.test(\"CT-API-009.4: O 'id' do objeto atualizado deve ser o mesmo do objeto original\", function () {",
+              "    pm.expect(responseJson.id).to.equal(generatedId);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Apple MacBook Pro 16\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial Update Object - CT-API-010",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-010.1: Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const requestBody = JSON.parse(pm.request.body.raw);",
+              "const freshObjectData = JSON.parse(pm.environment.get(\"freshObjectData\"));",
+              "const freshObjectId = pm.environment.get(\"freshObjectId\");",
+              "const previousTimestamp = pm.environment.get(\"freshCreatedTime\");",
+              "",
+              "pm.test(\"CT-API-010.2: Apenas o campo 'name' é alterado\", function() {",
+              "    pm.expect(responseJson.name).to.equal(requestBody.name);",
+              "    pm.expect(responseJson.data).to.deep.eql(freshObjectData);",
+              "});",
+              "",
+              "pm.test(\"CT-API-010.3: O 'id' do objeto atualizado deve ser o mesmo do objeto original\", function () {",
+              "    pm.expect(responseJson.id).to.equal(freshObjectId);",
+              "});",
+              "",
+              "pm.test(\"CT-API-010.4: 'updatedAt' é maior do que o valor de 'createdAt' retornado no Body Response do métdo POST após criar o objeto\", function () {",
+              "    pm.expect(responseJson.updatedAt).to.not.equal(previousTimestamp);",
+              "    pm.expect(Number(responseJson.updatedAt)).to.be.greaterThan(Number(previousTimestamp));",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest({",
+              "    url: pm.environment.get(\"baseURL\") + \"/objects\",",
+              "    method: \"POST\",",
+              "    header: { \"Content-Type\": \"application/json\" },",
+              "    body: {",
+              "        mode: \"raw\",",
+              "        raw: JSON.stringify({ name: \"Objeto de teste\", data: { year: 2019, price: 1849.99 } })",
+              "    }",
+              "}, function (err, res) {",
+              "    const created = res.json();",
+              "    pm.environment.set(\"freshObjectId\", created.id);",
+              "    pm.environment.set(\"freshObjectData\", JSON.stringify(created.data));",
+              "    pm.environment.set(\"freshCreatedTime\", created.createdAt);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Apple MacBook Pro 16 (Updated Name)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{freshObjectId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{freshObjectId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial Update Object - CT-API-011",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-011.1: Status code é 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const nonExistentId = pm.environment.get(\"nonExistentId\");",
+              "",
+              "pm.test(\"CT-API-011.1: Mensagem de erro identifica que o 'id' buscado não existe\", function () {",
+              "    pm.expect(responseJson).to.have.property(\"error\");",
+              "    pm.expect(responseJson.error).to.include(`id = ${nonExistentId}`);",
+              "    pm.expect(responseJson.error).to.include(\"doesn't exist.\");",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Objeto Fantasma\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{nonExistentId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{nonExistentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial Update Object - CT-API-012",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-012.1: Status code é 400 Bad Request\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "",
+              "pm.test(\"CT-API-012.2: A resposta contém apenas o campo 'error'\", () => {",
+              "    pm.expect(Object.keys(responseJson)).to.have.members([\"error\"]);",
+              "});",
+              "",
+              "pm.test(\"CT-API-012.3: A mensagem de erro é a esperada\", () => {",
+              "    pm.expect(responseJson.error).to.equal(",
+              "        \"No valid field(s) to update have been passed as part of a request body.\"",
+              "    );",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Object - CT-API-013",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-013.1: Status code é 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const generatedId = pm.environment.get(\"generatedId\");",
+              "",
+              "pm.test(\"CT-API-013.2: Response confirma o 'id' deletado\", function () {",
+              "    pm.expect(responseJson.message).to.include(`id = ${generatedId}`);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Single Object - Após DELETE do caso CT-API-013",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-013b.1: Status code deve ser '404 Not Found'\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{generatedId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{generatedId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Object - CT-API-014",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT-API-013.1: Status code é 404 Not Found\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "const responseJson = pm.response.json();",
+              "const nonExistentId = pm.environment.get(\"nonExistentId\");",
+              "",
+              "pm.test(\"CT-API-011.1: Mensagem de erro identifica que o 'id' buscado não existe\", function () {",
+              "    pm.expect(responseJson).to.have.property(\"error\");",
+              "    pm.expect(responseJson.error).to.include(`id = ${nonExistentId}`);",
+              "    pm.expect(responseJson.error).to.include(\"doesn't exist.\");",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/{{nonExistentId}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            "{{nonExistentId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Object - CT-API-015",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"CT-API-015.1: Status code é 405 Method Not Allowed\", function () {\r",
+              "    pm.response.to.have.status(405);\r",
+              "});\r",
+              "\r",
+              "const responseJson = pm.response.json();\r",
+              "\r",
+              "pm.test(\"CT-API-015.2: Mensagem de erro informa que o método não é permitido'\", function () {\r",
+              "    pm.expect(responseJson.error).to.eql(\"Method Not Allowed\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/objects/",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "objects",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test(\"Global: Tempo de resposta é aceitável (Até 1000ms)\", function () {\r",
+          "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+          "});"
+        ]
+      }
+    }
+  ]
+}

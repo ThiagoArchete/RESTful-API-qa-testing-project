@@ -11,7 +11,6 @@ A documentação completa (plano de testes, casos de teste, evidências e relat�
 | Bloco | Status |
 |---|---|
 | Endpoints públicos (6) | ✅ Concluído — 15 casos de teste, 65 testes automatizados |
-| Endpoints autenticados (9) | ⏳ Em andamento |
 
 ## Ferramentas
 

@@ -17,7 +17,7 @@ Os 6 endpoints públicos disponibilizados em https://api.restful-api.dev foram t
 
 ### Fora de escopo
 
-- **Testes de segurança** (autenticação, autorização, injeção, etc.) — não se aplicam aos endpoints públicos; serão tratados no plano de testes específico dos endpoints autenticados.
+- **Testes de segurança** (autenticação, autorização, injeção, etc.) — não se aplicam aos endpoints públicos.
 - **Testes de performance/carga** — este plano valida tempo de resposta individual por requisição (limiar de 1000ms, ver seção 6), mas não cobre testes de carga, stress ou concorrência.
 
 ## 3. Estratégia de teste
